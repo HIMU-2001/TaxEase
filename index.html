@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaxEase</title>
+    <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq1Is8sg3rLRfKsCXpGgj-kUAJp031rxVHBQ&s">
+    <meta name="description" content="A simple income tax calculator for the financial year 2025-2026. Calculate your tax based on the latest tax slabs and deductions.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        function taxCalculator() {
+          return {
+            salaryInput: '',
+            isSalaried: true,
+            baseStandardDeduction: 75000,
+            get salary() {
+              return Number(this.salaryInput.replace(/,/g, '')) || 0;
+            },
+            get standardDeduction() {
+              return this.isSalaried ? this.baseStandardDeduction : 0;
+            },
+            get taxableSalary() {
+              return Math.max(this.salary - this.standardDeduction, 0);
+            },
+            get slabs() {
+              return [
+                { range: "0 - 4 lakh", rate: "0%", tax: 0 },
+                { range: "4 - 8 lakh", rate: "5%", tax: this.taxableSalary > 400000 ? Math.min(this.taxableSalary - 400000, 400000) * 0.05 : 0 },
+                { range: "8 - 12 lakh", rate: "10%", tax: this.taxableSalary > 800000 ? Math.min(this.taxableSalary - 800000, 400000) * 0.10 : 0 },
+                { range: "12 - 16 lakh", rate: "15%", tax: this.taxableSalary > 1200000 ? Math.min(this.taxableSalary - 1200000, 400000) * 0.15 : 0 },
+                { range: "16 - 20 lakh", rate: "20%", tax: this.taxableSalary > 1600000 ? Math.min(this.taxableSalary - 1600000, 400000) * 0.20 : 0 },
+                { range: "20 - 24 lakh", rate: "25%", tax: this.taxableSalary > 2000000 ? Math.min(this.taxableSalary - 2000000, 400000) * 0.25 : 0 },
+                { range: "Above 24 lakh", rate: "30%", tax: this.taxableSalary > 2400000 ? (this.taxableSalary - 2400000) * 0.30 : 0 },
+              ];
+            },
+            get totalTax() {
+              return this.slabs.reduce((sum, slab) => sum + slab.tax, 0);
+            },
+            get rebate() {
+              return this.taxableSalary <= 1200000 ? Math.min(this.totalTax, 60000) : 0;
+            },
+            get taxAfterRebate() {
+              return Math.max(this.totalTax - this.rebate, 0);
+            },
+            get educationCess() {
+              return this.taxAfterRebate * 0.04;
+            },
+            get totalTaxPayable() {
+              return (this.taxAfterRebate + this.educationCess).toFixed(2);
+            },
+            formatSalary() {
+              this.salaryInput = this.salary.toLocaleString();
+            }
+          };
+        }
+      </script>
+    
+    <style>
+      body {
+        font-family: "Montserrat", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f8f9fa;
+      }
+      
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 90%;
+        max-width: 500px;
+      }
+      
+      h2 {
+        font-family: "Roboto", sans-serif;
+        color: #007bff;
+      }
+      
+      .input-container {
+        width: 100%;
+        margin: 10px 0;
+      }
+      
+      .number-input {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        outline: none;
+        text-align: left;
+      }
+      
+      .number-input:focus {
+        border-color: #0056b3;
+      }
+      
+      .checkbox-container {
+        margin: 10px 0;
+      }
+      
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        text-align: center;
+      }
+      
+      th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+      
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+      
+      footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+        color: gray;
+        padding: 10px;
+        background: #f1f1f1;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a slight shadow effect */
+    }
+
+      
+    .app-title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    </style>
+  </head>
+  <body>
+    <h1 class="app-title">TaxEase - Smart Income Tax Calculator</h1>    
+    <div class="container" x-data="taxCalculator()">
+      
+      <label for="salary">Enter Income</label>
+      <div class="input-container">
+        <input x-model="salaryInput" x-on:input="formatSalary()" type="text" class="number-input" />
+      </div>
+    
+      <div class="checkbox-container">
+        <input type="checkbox" id="salaried" x-model="isSalaried" />
+        <label for="salaried">Salaried Income?</label>
+      </div>
+      
+      <h3>Standard Deduction: ₹<span x-text="standardDeduction.toLocaleString()"></span></h3>
+      <h3>Taxable Income: ₹<span x-text="taxableSalary.toLocaleString()"></span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Income Slab</th>
+            <th>Tax Rate</th>
+            <th>Calculated Tax (₹)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="slab in slabs">
+            <tr x-show="slab.tax > 0">
+              <td x-text="slab.range"></td>
+              <td x-text="slab.rate"></td>
+              <td x-text="slab.tax.toFixed(2)"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      
+      <h3>Calculated Tax: ₹<span x-text="totalTax.toFixed(2)"></span></h3>
+      <h3 x-show="rebate > 0">Rebate Applied: ₹<span x-text="rebate.toFixed(2)"></span></h3>
+      <h3>Tax After Rebate: ₹<span x-text="taxAfterRebate.toFixed(2)"></span></h3>
+      <h3>Cess (4%): ₹<span x-text="educationCess.toFixed(2)"></span></h3>
+      <h3><b>Final Tax Payable: ₹<span x-text="totalTaxPayable"></span></b></h3>
+    </div>
+    
+    <footer>
+      &copy; 2025 TaxEase. All Rights Reserved.
+    </footer>
+  </body>
+</html>
