@@ -1,0 +1,88 @@
+/* Global Styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f9f9f9;
+}
+
+/* Main Container */
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Input Fields */
+.input-container {
+    width: 95%;
+    margin-bottom: 10px;
+}
+
+.number-input {
+    padding: 12px;
+    font-size: 18px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    outline: none;
+    text-align: left;
+    background-color: white;
+}
+
+.number-input:focus {
+    border-color: #0056b3;
+}
+
+
+/* Checkbox */
+.checkbox-container {
+    margin: 10px 0;
+}
+
+/* Table */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    padding: 10px;
+    background: #f1f1f1;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
